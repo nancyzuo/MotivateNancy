@@ -3,10 +3,11 @@ import "./App.css";
 import Naan from "./components/naan";
 import { useState, useEffect } from "react";
 import "./components/naan-styles.css";
+import { firestore } from "./firebase-config"
 
 const App = () => {
   const [clicks, setClicks] = useState(null);
-
+  
   useEffect(() => {
     setClicks(0);
   }, []);
@@ -19,6 +20,28 @@ const App = () => {
     document.body.style.background = randomColors();
   };
 
+  // App.js
+  state = {
+      numClicks: 0
+    }
+
+  const { numClicks } = this.state
+
+  updateInput = event => {
+    this.setState({ [event.target.name]: event.target.value })
+  }
+
+  // App.js
+addBook = event => {
+	event.preventDefault()
+
+	firestore.collection("clicks").add({
+		numClicks: this.state.numClicks,
+	})
+
+	this.setState({ numClicks: 0 })
+}
+  
   return (
     <div className="App">
       <Naan setClicks={setClicks} randomize={randomize} clicks={clicks} />
@@ -48,6 +71,19 @@ const App = () => {
           .
         </p>
       </div>
+
+      <form onSubmit={this.addBook}>
+                    <input
+                        type='text'
+                        placeholder='clicks'
+                        name='title'
+                        onChange={this.updateInput}
+                        value={numClicks}
+          />
+                    <button type='submit'>Submit</button>
+                </form>
+
+
       <p className="input">
         {clicks}
         <br />
@@ -55,6 +91,8 @@ const App = () => {
       </p>
     </div>
   );
+
 };
+
 
 export default App;
